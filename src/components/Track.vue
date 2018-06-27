@@ -1,5 +1,5 @@
 <template lang="pug">
-  .card
+  .card(v-if="track && track.album")
     .card-image
       figure.image.is-1by1
         img(:src="track.album.images[0].url")
@@ -15,11 +15,13 @@
           p.subtitle.is-6 {{ track.artists[0].name }}
 
       .content
-        small {{ track.duration_ms }}
+        small {{ track.duration_ms | ms-to-mn }}
         nav.level
           .level-left
             a.level-item
               span.icon.is-small(@click="selectTrack") ▶
+            a.level-item
+              span.icon.is-small(@click="goToTrack(track.id)") ✅
 </template>
 
 <script>
@@ -31,13 +33,13 @@ export default {
   methods: {
     selectTrack () {
       this.$emit('select', this.track.id)
+      this.$bus.$emit('set-track', this.track)
+    },
+
+    goToTrack (id) {
+      this.$router.push({ name: 'track', params: { id: id } })
     }
   }
 }
 </script>
-
-<style lang="sass">
-
-</style>
-
 
